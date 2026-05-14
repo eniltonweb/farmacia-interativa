@@ -34,10 +34,6 @@ $stmt = $pdo->query("
 ");
 $produtos = $stmt->fetchAll();
 
-function e(?string $valor): string
-{
-    return htmlspecialchars((string)$valor, ENT_QUOTES, 'UTF-8');
-}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">

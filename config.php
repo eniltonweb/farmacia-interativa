@@ -21,7 +21,9 @@ try {
         ]
     );
 } catch (PDOException $e) {
+    error_log('Erro de banco de dados: ' . $e->getMessage());
     http_response_code(500);
-    exit('Erro ao conectar ao banco de dados: ' . $e->getMessage());
+    exit('Erro interno do servidor. Por favor, tente novamente mais tarde.');
 }
-
+
+

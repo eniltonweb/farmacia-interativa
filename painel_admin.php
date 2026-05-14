@@ -3,10 +3,6 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/admin_guard.php';
 
-function e(?string $valor): string
-{
-    return htmlspecialchars((string)$valor, ENT_QUOTES, 'UTF-8');
-}
 
 $stmt = $pdo->query("
     SELECT
