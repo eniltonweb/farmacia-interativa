@@ -24,8 +24,4 @@ try {
     http_response_code(500);
     exit('Erro ao conectar ao banco de dados: ' . $e->getMessage());
 }
-
-function limparTexto(?string $valor): string
-{
-    return htmlspecialchars(trim((string)$valor), ENT_QUOTES, 'UTF-8');
-}
+
