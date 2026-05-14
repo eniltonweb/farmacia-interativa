@@ -181,15 +181,11 @@ $produtos = $stmt->fetchAll();
 $arquivosServidor = [];
 
 if (is_dir($pastaArquivos)) {
-    $lista = scandir($pastaArquivos);
+    $lista = glob(rtrim($pastaArquivos, '/\\') . DIRECTORY_SEPARATOR . '*.[pP][dD][fF]');
 
-    foreach ($lista as $arquivo) {
-        if ($arquivo === '.' || $arquivo === '..') {
-            continue;
-        }
-
-        if (strtolower(pathinfo($arquivo, PATHINFO_EXTENSION)) === 'pdf') {
-            $arquivosServidor[] = $arquivo;
+    if ($lista !== false) {
+        foreach ($lista as $caminho) {
+            $arquivosServidor[] = basename($caminho);
         }
     }
 
