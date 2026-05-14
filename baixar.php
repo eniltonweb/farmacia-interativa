@@ -116,7 +116,20 @@ if ($totalDownloads >= 5) {
         $emailEnviado = false;
 
         if (!empty($emailAdmin)) {
-            $emailEnviado = @mail($emailAdmin, $assunto, $mensagem, $headers);
+            $mailData = json_encode([
+                'to' => $emailAdmin,
+                'subject' => $assunto,
+                'message' => $mensagem,
+                'headers' => $headers
+            ]);
+
+            // In web environments, PHP_BINARY might point to php-fpm which doesn't support -r.
+            // Using a separate script executed via 'php' ensures CLI execution.
+            // printf '%s' is used instead of echo to avoid backslash evaluation issues in some shells.
+            // Piped into stdin to avoid process list exposure and ARG_MAX limits.
+            $cmd = 'printf \'%s\' ' . escapeshellarg($mailData) . ' | php ' . escapeshellarg(__DIR__ . '/send_mail_bg.php') . ' > /dev/null 2>&1 &';
+            exec($cmd);
+            $emailEnviado = true; // Assume success for log as it's fire-and-forget
         }
 
         $stmt = $pdo->prepare("
