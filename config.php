@@ -26,12 +26,4 @@ try {
     exit('Erro interno do servidor. Por favor, tente novamente mais tarde.');
 }
 
-function limparTexto(?string $valor): string
-{
-    return htmlspecialchars(trim((string)$valor), ENT_QUOTES, 'UTF-8');
-}
 
-function e(?string $valor): string
-{
-    return htmlspecialchars((string)$valor, ENT_QUOTES, 'UTF-8');
-}
