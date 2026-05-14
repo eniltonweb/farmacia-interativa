@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $pdo->rollBack();
             }
 
-            $erro = 'Erro ao limpar base: ' . $e->getMessage();
+            $erro = 'Ocorreu um erro interno ao limpar a base de dados.';
         }
     }
 }
