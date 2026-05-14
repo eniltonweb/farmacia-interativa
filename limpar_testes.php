@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/admin_guard.php';
 
-
 if (empty($_SESSION['csrf_limpar_testes'])) {
     $_SESSION['csrf_limpar_testes'] = bin2hex(random_bytes(32));
 }

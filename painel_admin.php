@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/admin_guard.php';
 
-
 $stmt = $pdo->query("
     SELECT
         (SELECT COUNT(*) FROM clientes_acesso) AS total_clientes,
