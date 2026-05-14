@@ -7,7 +7,7 @@ $dbname = 'infoprodutonil';
 $user = 'infoprodutonil';
 $pass = 'Nil2024#';
 
-$senhaAdminSistema = 'adminnil2026';
+$hashSenhaAdminSistema = '$2y$10$rCKTDg4Zye0rloycATtepOyWEBrF5/wb22t/MMfcLW5uWBg/pBPvS';
 $emailAdmin = 'nil@enilton.com.br';
 
 try {
