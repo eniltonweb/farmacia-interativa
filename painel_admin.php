@@ -9,22 +9,15 @@ function e(?string $valor): string
 }
 
 $stmt = $pdo->query("
-    SELECT COUNT(*) AS total
-    FROM clientes_acesso
+    SELECT
+        (SELECT COUNT(*) FROM clientes_acesso) AS total_clientes,
+        (SELECT COUNT(*) FROM downloads_log) AS total_downloads,
+        (SELECT COUNT(*) FROM alertas_download) AS total_alertas
 ");
-$totalClientes = (int)$stmt->fetch()['total'];
-
-$stmt = $pdo->query("
-    SELECT COUNT(*) AS total
-    FROM downloads_log
-");
-$totalDownloads = (int)$stmt->fetch()['total'];
-
-$stmt = $pdo->query("
-    SELECT COUNT(*) AS total
-    FROM alertas_download
-");
-$totalAlertas = (int)$stmt->fetch()['total'];
+$counts = $stmt->fetch();
+$totalClientes = (int)($counts['total_clientes'] ?? 0);
+$totalDownloads = (int)($counts['total_downloads'] ?? 0);
+$totalAlertas = (int)($counts['total_alertas'] ?? 0);
 
 $stmt = $pdo->query("
     SELECT
