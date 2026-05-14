@@ -16,19 +16,86 @@ if (empty($_SESSION['csrf_token'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $csrfToken = $_POST['csrf_token'] ?? '';
     $senha = $_POST['senha'] ?? '';
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $attemptsFile = __DIR__ . '/admin_login_attempts.json';
+    $maxAttempts = 5;
+    $lockoutTime = 300; // 5 minutos
 
-    if (empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
-        $erro = 'Token CSRF inválido.';
-    } elseif (!isset($senhaAdminSistema) || trim((string)$senhaAdminSistema) === '') {
-        $erro = 'Senha administrativa não configurada no config.php.';
-    } elseif (hash_equals((string)$senhaAdminSistema, (string)$senha)) {
-        $_SESSION['admin_logado'] = true;
-        $_SESSION['admin_login_em'] = date('Y-m-d H:i:s');
+    $fp = @fopen($attemptsFile, 'c+');
+    $blocked = false;
+    $changed = false;
 
+    if ($fp) {
+        flock($fp, LOCK_EX);
+        clearstatcache(true, $attemptsFile);
+        $filesize = filesize($attemptsFile);
+        $attemptsData = [];
+        if ($filesize > 0) {
+            rewind($fp);
+            $content = fread($fp, $filesize);
+            $attemptsData = json_decode($content, true) ?: [];
+        }
+
+        $currentTime = time();
+
+        foreach ($attemptsData as $storedIp => $data) {
+            if ($currentTime - $data['last_attempt'] > $lockoutTime) {
+                unset($attemptsData[$storedIp]);
+                $changed = true;
+            }
+        }
+
+        $ipData = $attemptsData[$ip] ?? ['count' => 0, 'last_attempt' => 0];
+
+        if ($ipData['count'] >= $maxAttempts) {
+            $minutosRestantes = ceil(($lockoutTime - ($currentTime - $ipData['last_attempt'])) / 60);
+            $erro = "Muitas tentativas falhas. Tente novamente em {$minutosRestantes} minutos.";
+            $blocked = true;
+        }
+    }
+
+    if (!$blocked) {
+        if (empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
+            $erro = 'Token CSRF inválido.';
+            if ($fp) {
+                $ipData['count']++;
+                $ipData['last_attempt'] = time();
+                $attemptsData[$ip] = $ipData;
+                $changed = true;
+            }
+        } elseif (!isset($senhaAdminSistema) || trim((string)$senhaAdminSistema) === '') {
+            $erro = 'Senha administrativa não configurada no config.php.';
+        } elseif (hash_equals((string)$senhaAdminSistema, (string)$senha)) {
+            if ($fp) {
+                unset($attemptsData[$ip]);
+                $changed = true;
+            }
+            $_SESSION['admin_logado'] = true;
+            $_SESSION['admin_login_em'] = date('Y-m-d H:i:s');
+        } else {
+            $erro = 'Senha incorreta.';
+            if ($fp) {
+                $ipData['count']++;
+                $ipData['last_attempt'] = time();
+                $attemptsData[$ip] = $ipData;
+                $changed = true;
+            }
+        }
+    }
+
+    if ($fp) {
+        if ($changed) {
+            ftruncate($fp, 0);
+            rewind($fp);
+            fwrite($fp, json_encode($attemptsData));
+        }
+        flock($fp, LOCK_UN);
+        fclose($fp);
+    }
+
+    if (isset($_SESSION['admin_logado']) && $_SESSION['admin_logado']) {
         header('Location: painel_admin.php');
         exit;
-    } else {
-        $erro = 'Senha incorreta.';
     }
 }
 ?>
