@@ -63,9 +63,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $attemptsData[$ip] = $ipData;
                 $changed = true;
             }
-        } elseif (!isset($senhaAdminSistema) || trim((string)$senhaAdminSistema) === '') {
+        } elseif (!isset($hashSenhaAdminSistema) || trim((string)$hashSenhaAdminSistema) === '') {
             $erro = 'Senha administrativa não configurada no config.php.';
-        } elseif (hash_equals((string)$senhaAdminSistema, (string)$senha)) {
+        } elseif (password_verify((string)$senha, (string)$hashSenhaAdminSistema)) {
             if ($fp) {
                 unset($attemptsData[$ip]);
                 $changed = true;
@@ -105,6 +105,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <title>Login Administrativo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
@@ -114,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin: 0;
             min-height: 100vh;
             background: linear-gradient(135deg, #123f31, #1b5b47);
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: 'Inter', Arial, Helvetica, sans-serif;
             display: flex;
             align-items: center;
             justify-content: center;

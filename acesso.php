@@ -41,6 +41,9 @@ $produtos = $stmt->fetchAll();
     <title>Acesso ao Kit Digital</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex,nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --verde: #123f31;
@@ -59,7 +62,7 @@ $produtos = $stmt->fetchAll();
 
         body {
             margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: 'Inter', Arial, Helvetica, sans-serif;
             background: linear-gradient(180deg, #f8f3ea, #f3eee4);
             color: var(--texto);
             padding: 24px;
