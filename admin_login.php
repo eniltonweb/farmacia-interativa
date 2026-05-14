@@ -115,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <p>Acesso restrito ao administrador.</p>
 
     <?php if ($erro): ?>
-        <div class="erro"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></div>
+        <div class="erro"><?= e($erro) ?></div>
     <?php endif; ?>
 
     <form method="post">
