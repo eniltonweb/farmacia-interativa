@@ -9,6 +9,14 @@ DirectoryIndex index.php index.html
     Require all denied
 </Files>
 
-<FilesMatch "\.(sql|bak|env|ini|log)$">
+<Files "admin_login_attempts.json">
+    Require all denied
+</Files>
+
+<Files "send_mail_bg.php">
+    Require all denied
+</Files>
+
+<FilesMatch "\.(sql|bak|env|ini|log|json)$">
     Require all denied
 </FilesMatch>
