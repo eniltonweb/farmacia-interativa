@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/admin_guard.php';
 
-
 function nomeArquivoSeguro(string $nomeOriginal): string
 {
     $nome = strtolower(trim($nomeOriginal));
@@ -181,11 +180,15 @@ $produtos = $stmt->fetchAll();
 $arquivosServidor = [];
 
 if (is_dir($pastaArquivos)) {
-    $lista = glob(rtrim($pastaArquivos, '/\\') . DIRECTORY_SEPARATOR . '*.[pP][dD][fF]');
+    $lista = scandir($pastaArquivos);
 
-    if ($lista !== false) {
-        foreach ($lista as $caminho) {
-            $arquivosServidor[] = basename($caminho);
+    foreach ($lista as $arquivo) {
+        if ($arquivo === '.' || $arquivo === '..') {
+            continue;
+        }
+
+        if (strtolower(pathinfo($arquivo, PATHINFO_EXTENSION)) === 'pdf') {
+            $arquivosServidor[] = $arquivo;
         }
     }
 

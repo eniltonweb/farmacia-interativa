@@ -21,9 +21,16 @@ try {
         ]
     );
 } catch (PDOException $e) {
-    error_log('Erro de banco de dados: ' . $e->getMessage());
     http_response_code(500);
-    exit('Erro interno do servidor. Por favor, tente novamente mais tarde.');
+    exit('Erro ao conectar ao banco de dados: ' . $e->getMessage());
 }
 
+function limparTexto(?string $valor): string
+{
+    return htmlspecialchars(trim((string)$valor), ENT_QUOTES, 'UTF-8');
+}
 
+function e(?string $valor): string
+{
+    return htmlspecialchars((string)$valor, ENT_QUOTES, 'UTF-8');
+}
