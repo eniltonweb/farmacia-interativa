@@ -9,10 +9,17 @@ require_once __DIR__ . '/config.php';
 
 $erro = '';
 
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $csrfToken = $_POST['csrf_token'] ?? '';
     $senha = $_POST['senha'] ?? '';
 
-    if (!isset($senhaAdminSistema) || trim((string)$senhaAdminSistema) === '') {
+    if (empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
+        $erro = 'Token CSRF inválido.';
+    } elseif (!isset($senhaAdminSistema) || trim((string)$senhaAdminSistema) === '') {
         $erro = 'Senha administrativa não configurada no config.php.';
     } elseif (hash_equals((string)$senhaAdminSistema, (string)$senha)) {
         $_SESSION['admin_logado'] = true;
@@ -119,6 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endif; ?>
 
     <form method="post">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
         <label for="senha">Senha administrativa</label>
         <input type="password" name="senha" id="senha" required autofocus>
         <button type="submit">Entrar</button>
