@@ -18,21 +18,21 @@ $erro = '';
 
 function contarRegistros(PDO $pdo): array
 {
-    $tabelas = [
-        'clientes_acesso',
-        'downloads_log',
-        'alertas_download',
-        'produtos_digitais'
+    $stmt = $pdo->query("
+        SELECT
+            (SELECT COUNT(*) FROM clientes_acesso) AS clientes_acesso,
+            (SELECT COUNT(*) FROM downloads_log) AS downloads_log,
+            (SELECT COUNT(*) FROM alertas_download) AS alertas_download,
+            (SELECT COUNT(*) FROM produtos_digitais) AS produtos_digitais
+    ");
+    $counts = $stmt->fetch();
+
+    return [
+        'clientes_acesso' => (int)($counts['clientes_acesso'] ?? 0),
+        'downloads_log' => (int)($counts['downloads_log'] ?? 0),
+        'alertas_download' => (int)($counts['alertas_download'] ?? 0),
+        'produtos_digitais' => (int)($counts['produtos_digitais'] ?? 0),
     ];
-
-    $dados = [];
-
-    foreach ($tabelas as $tabela) {
-        $stmt = $pdo->query("SELECT COUNT(*) AS total FROM {$tabela}");
-        $dados[$tabela] = (int)$stmt->fetch()['total'];
-    }
-
-    return $dados;
 }
 
 $antes = contarRegistros($pdo);
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->beginTransaction();
 
             $pdo->exec("
-                TRUNCATE TABLE 
+                TRUNCATE TABLE
                     alertas_download,
                     downloads_log,
                     clientes_acesso
