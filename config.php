@@ -21,8 +21,9 @@ try {
         ]
     );
 } catch (PDOException $e) {
+    error_log('Erro ao conectar ao banco de dados: ' . $e->getMessage());
     http_response_code(500);
-    exit('Erro ao conectar ao banco de dados: ' . $e->getMessage());
+    exit('Erro interno ao conectar ao banco de dados.');
 }
 
 function limparTexto(?string $valor): string
