@@ -6,6 +6,7 @@ require_once __DIR__ . '/admin_guard.php';
 $mensagem = '';
 $linkGerado = '';
 
+
 function gerarTokenMercadoLivre(): string
 {
     return 'ML' . date('Y') . '-' . strtoupper(bin2hex(random_bytes(4)));
