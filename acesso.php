@@ -33,6 +33,7 @@ $stmt = $pdo->query("
     ORDER BY id ASC
 ");
 $produtos = $stmt->fetchAll();
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
