@@ -1,0 +1,14 @@
+Options -Indexes
+DirectoryIndex index.php index.html
+
+<Files "config.php">
+    Require all denied
+</Files>
+
+<Files "admin_guard.php">
+    Require all denied
+</Files>
+
+<FilesMatch "\.(sql|bak|env|ini|log)$">
+    Require all denied
+</FilesMatch>
