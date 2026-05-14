@@ -60,6 +60,7 @@ $stmt = $pdo->query("
         p.id,
         p.titulo
     ORDER BY total_downloads DESC, ultimo_download DESC
+    LIMIT 100
 ");
 $resumoDownloads = $stmt->fetchAll();
 
